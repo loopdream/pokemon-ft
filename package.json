@@ -1,0 +1,73 @@
+{
+  "name": "freetrade",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "build:standalone": "BUILD_STANDALONE=true next build",
+    "start:standalone": "cp -R ./public ./.next/standalone && cp -R ./.next/static ./public ./.next/standalone/.next && node ./.next/standalone/server.js",
+    "build-start": "next build && next start",
+    "build-start:standalone": "npm run build:standalone && npm run start:standalone",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.12.2",
+    "next": "14.0.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/jest": "^29.5.10",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-testing-library": "^6.2.0",
+    "husky": "^8.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^15.2.0",
+    "postcss": "^8",
+    "prettier": "^3.1.0",
+    "tailwindcss": "^3.3.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5"
+  },
+  "lint-staged": {
+    "**/*.js?(x)": [
+      "prettier --write .",
+      "eslint --fix .",
+      "jest --ci"
+    ],
+    "**/*.ts?(x)": [
+      "prettier --write .",
+      "eslint --fix .",
+      "jest --ci",
+      "tsc --noEmit"
+    ],
+    "**/*.{md, yml, yaml, json}": [
+      "prettier --write ."
+    ],
+    "**/*.{css}": [
+      "prettier --write ."
+    ]
+  }
+}
