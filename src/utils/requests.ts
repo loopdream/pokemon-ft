@@ -1,26 +1,52 @@
 import axios from 'axios';
+import { Pokemon } from 'types/pokemon';
 
-const axiosClient = axios.create({
-  baseURL: 'https://pokeapi.co/api/v2',
-});
+const API_URL = 'https://pokeapi.co/api/v2/pokemon';
 
-export const getPokemon = async () => {
-  const pokemonPromises = await axiosClient
-    // get the list of pokemons
-    .get(`/pokemon`)
+export type PokemonResponseType = {
+  count: number;
+  next: string;
+  previous: string;
+  pokemon: Array<Pokemon[]>;
+};
+
+type getPokemonProps = {
+  queryKey: string[];
+  pageParam: number | string;
+  meta: Record<string, unknown> | undefined;
+};
+
+export const getPokemon = async ({ pageParam, queryKey }: getPokemonProps) => {
+  const searchBy = queryKey[1];
+  const searchTerm = queryKey[2];
+  const url = typeof pageParam === 'string' ? pageParam : API_URL;
+
+  console.log({ pageParam, searchBy, searchTerm });
+  // fetch the list of pokemon
+  const pokemonList = await axios
+    .get(url)
     .then((res) => res.data)
-    // fetch get the data of each pokemon as a proimise
-    .then((res) =>
-      res.results.map(({ url }: { url: string }) => axiosClient.get(url))
-    )
     .catch(function (error: unknown) {
-      throw new Error(`Error fetching pokemon: ${error}`);
+      throw new Error(`Error fetching pokemonList: ${error}`);
     });
+
+  const pokemonPromises = pokemonList.results.map(({ url }: { url: string }) =>
+    axios.get(url)
+  );
 
   return Promise.all(pokemonPromises)
     .then((responses) =>
       Promise.all(responses.map((response) => response.data))
     )
+    .then((pokemon) => {
+      const { count, next, previous } = pokemonList;
+      return {
+        count,
+        nextPage: next,
+        previous,
+        pokemon,
+      };
+    })
     .catch(function (error: unknown) {
       throw new Error(`Error fetching pokemon: ${error}`);
     });
