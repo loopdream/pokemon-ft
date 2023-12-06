@@ -21,22 +21,20 @@ export enum SearchByEnum {
   Types = 'Types',
 }
 
-export const fetchCache = 'orce-no-store';
-
-const searchByOptions = Object.values(SearchByEnum);
-
 export default function Pokemon() {
   const { ref, inView } = useInView();
 
+  const [pokemonCount, setPokemonCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchBy, setSearchBy] = useState<SearchByEnum>(SearchByEnum.Name);
 
-  const { data, error, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['pokemon', searchTerm],
-    queryFn: getPokemon,
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
-  });
+  const { data, error, isFetching, fetchNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['pokemon'],
+      queryFn: getPokemon,
+      initialPageParam: 0,
+      getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
+    });
 
   useEffect(() => {
     // load more pokemon when the user scrolls to the bottom of the page
@@ -45,11 +43,15 @@ export default function Pokemon() {
     }
   }, [fetchNextPage, inView]);
 
+  useEffect(() => {
+    if (data?.pages[0]) {
+      setPokemonCount(data?.pages[0].count || 0);
+    }
+  }, [data]);
+
   const handleUpdateSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
   };
-
-  const count = data?.pages[0].count || 0;
 
   const pokemonData: PokemonType[] =
     data?.pages.flatMap((page) => page.pokemon) ?? [];
@@ -77,7 +79,6 @@ export default function Pokemon() {
       }
     }) || pokemonData;
 
-  console.log({ data });
   return (
     <main className="min-h-screen p-8 lx:p-0 max-w-7xl mx-auto">
       <header className="flex flex-col mb-10 justify-center md:flex-row md:justify-between">
@@ -85,10 +86,10 @@ export default function Pokemon() {
           <Logo />
         </div>
         <SearchPanel
-          count={count}
+          count={pokemonCount}
           searchBy={searchBy}
           setSearchBy={setSearchBy}
-          searchByOptions={searchByOptions}
+          searchByOptions={Object.values(SearchByEnum)}
           handleUpdateSearch={handleUpdateSearch}
         />
       </header>
@@ -98,6 +99,20 @@ export default function Pokemon() {
           There was an error fetching the data
         </p>
       )}
+
+      {isFetching ||
+        (filteredPokemon.length === 0 && (
+          <ul
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+            role="list"
+          >
+            {[...Array(4)].map((i) => (
+              <li key={i} className="col-span-1 flex flex-col" role="listitem">
+                <div className="bg-slate-200 w-full h-[360px] mt-3 rounded-lg animate-pulse"></div>
+              </li>
+            ))}
+          </ul>
+        ))}
 
       <PokemonList data={filteredPokemon} />
 

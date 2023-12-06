@@ -1,12 +1,12 @@
 import { SearchByEnum } from '../page';
 import Dropdown from './Dropdown';
 
-type SearchProps = {
+export type SearchProps = {
   count: number;
   handleUpdateSearch: (search: string) => void;
   searchBy: SearchByEnum;
   setSearchBy?: (searchCriteria: SearchByEnum) => void;
-  searchByOptions: (string | SearchByEnum)[];
+  searchByOptions: Array<SearchByEnum>;
 };
 
 export default function SearchPanel({

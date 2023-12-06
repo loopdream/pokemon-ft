@@ -4,13 +4,12 @@ import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import classNames from 'classnames';
 
-import { SearchByEnum } from '../page';
+import { SearchProps } from './SearchPanel';
 
-type DropdownProps = {
-  searchBy: SearchByEnum;
-  setSearchBy?: (searchCriteria: SearchByEnum) => void;
-  searchByOptions: Array<SearchByEnum>;
-};
+type DropdownProps = Pick<
+  SearchProps,
+  'searchBy' | 'setSearchBy' | 'searchByOptions'
+>;
 
 export default function Dropdown({
   searchBy,
