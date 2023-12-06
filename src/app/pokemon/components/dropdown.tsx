@@ -8,22 +8,22 @@ import { SearchByEnum } from '../page';
 
 type DropdownProps = {
   searchBy: SearchByEnum;
-  setSearchBy: (searchCriteria: SearchByEnum) => void;
-  searchByOptions: (string | SearchByEnum)[];
+  setSearchBy?: (searchCriteria: SearchByEnum) => void;
+  searchByOptions: Array<SearchByEnum>;
 };
 
 export default function Dropdown({
   searchBy,
-  setSearchBy,
+  setSearchBy = () => {},
   searchByOptions,
 }: DropdownProps) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semiboldring-1 ring-inset ring-gray-300 text-white bg-indigo-600 shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
           {searchBy}
           <ChevronDownIcon
-            className="-mr-1 h-5 w-5 text-gray-400"
+            className="-mr-1 h-5 w-5 text-white-400"
             aria-hidden="true"
           />
         </Menu.Button>

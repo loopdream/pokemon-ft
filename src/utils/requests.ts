@@ -40,11 +40,13 @@ export const getPokemon = async ({ pageParam, queryKey }: getPokemonProps) => {
     )
     .then((pokemon) => {
       const { count, next, previous } = pokemonList;
+      const pageCount = Math.ceil(count / 20);
       return {
         count,
         nextPage: next,
-        previous,
+        pageCount,
         pokemon,
+        previous,
       };
     })
     .catch(function (error: unknown) {

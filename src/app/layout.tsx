@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
@@ -18,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={classNames(inter.className, 'bg-slate-300')}>
         <Providers>{children}</Providers>
       </body>
     </html>

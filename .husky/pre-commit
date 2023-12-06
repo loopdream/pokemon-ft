@@ -14,7 +14,7 @@ npx lint-staged || {
 
 # TODOs / FIXMEs
 printf "\n\n"
-printf "TODOs / FIXMEs - consider reviewing these"
+printf "TODOs / FIXMEs - consider reviewing these"s
 printf "\n------------------------------------------\n"
 #
 npx leasot 'src/**/*.[jt]s?(x)' --exit-nicely
