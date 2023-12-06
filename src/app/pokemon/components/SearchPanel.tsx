@@ -3,7 +3,6 @@ import { SearchByEnum } from 'types/search';
 import Dropdown from './Dropdown';
 
 export type SearchProps = {
-  count: number;
   handleUpdateSearch: (search: string) => void;
   searchBy: SearchByEnum;
   setSearchBy?: (searchCriteria: SearchByEnum) => void;
@@ -11,7 +10,6 @@ export type SearchProps = {
 };
 
 export default function SearchPanel({
-  count = 0,
   handleUpdateSearch,
   searchBy,
   setSearchBy,
@@ -29,7 +27,7 @@ export default function SearchPanel({
     >
       <div className="px-4 py-5 sm:p-6">
         <h3 className="text-base font-semibold leading-6 text-gray-900 mb-3">
-          Search {count} Pokemon by {searchBy}
+          Search Pokemon by {searchBy}
         </h3>
         <div className="flex w-full">
           <input

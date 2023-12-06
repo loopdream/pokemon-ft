@@ -20,7 +20,6 @@ import SkeletonList from './components/SkeletonList';
 export default function Pokemon() {
   const { ref, inView } = useInView();
 
-  const [pokemonCount, setPokemonCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchBy, setSearchBy] = useState<SearchByEnum>(SearchByEnum.Name);
 
@@ -34,16 +33,10 @@ export default function Pokemon() {
 
   useEffect(() => {
     // load more pokemon when the user scrolls to the bottom of the page
-    if (inView) {
+    if (inView && !isFetchingNextPage && searchTerm === '') {
       fetchNextPage();
     }
-  }, [fetchNextPage, inView]);
-
-  useEffect(() => {
-    if (data?.pages[0]) {
-      setPokemonCount(data?.pages[0].count || 0);
-    }
-  }, [data]);
+  }, [fetchNextPage, isFetchingNextPage, searchTerm, inView]);
 
   const handleUpdateSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
@@ -84,7 +77,6 @@ export default function Pokemon() {
           <Logo />
         </div>
         <SearchPanel
-          count={pokemonCount}
           searchBy={searchBy}
           setSearchBy={setSearchBy}
           searchByOptions={Object.values(SearchByEnum)}
@@ -110,9 +102,7 @@ export default function Pokemon() {
 
       <PokemonList data={filteredPokemon} />
 
-      <div ref={ref}>
-        {isFetchingNextPage && <p className="text-center mt-6">Loading..</p>}
-      </div>
+      <div ref={ref} />
 
       <ScrollToTop
         smooth
