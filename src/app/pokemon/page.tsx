@@ -6,20 +6,16 @@ import ScrollToTop from 'react-scroll-to-top';
 
 import { ArrowUpIcon } from '@heroicons/react/20/solid';
 import { useInfiniteQuery } from '@tanstack/react-query';
-// import 'server-only';
+import { debounce } from 'lodash';
 import { Pokemon as PokemonType } from 'types/pokemon';
+import { SearchByEnum } from 'types/search';
 
 import { getPokemon } from 'utils/requests';
 
 import Logo from './components/Logo';
 import PokemonList from './components/PokemonList';
 import SearchPanel from './components/SearchPanel';
-
-export enum SearchByEnum {
-  Name = 'Name',
-  Abilities = 'Abilities',
-  Types = 'Types',
-}
+import SkeletonList from './components/SkeletonList';
 
 export default function Pokemon() {
   const { ref, inView } = useInView();
@@ -53,6 +49,8 @@ export default function Pokemon() {
     setSearchTerm(searchTerm);
   };
 
+  const debouncedUpdateSearch = debounce(handleUpdateSearch, 200);
+
   const pokemonData: PokemonType[] =
     data?.pages.flatMap((page) => page.pokemon) ?? [];
 
@@ -81,7 +79,7 @@ export default function Pokemon() {
 
   return (
     <main className="min-h-screen p-8 lx:p-0 max-w-7xl mx-auto">
-      <header className="flex flex-col mb-10 justify-center md:flex-row md:justify-between">
+      <header className="flex flex-col mb-10 justify-center md:flex-row md:justify-between md:h-[120px]">
         <div>
           <Logo />
         </div>
@@ -90,7 +88,7 @@ export default function Pokemon() {
           searchBy={searchBy}
           setSearchBy={setSearchBy}
           searchByOptions={Object.values(SearchByEnum)}
-          handleUpdateSearch={handleUpdateSearch}
+          handleUpdateSearch={debouncedUpdateSearch}
         />
       </header>
 
@@ -100,19 +98,15 @@ export default function Pokemon() {
         </p>
       )}
 
-      {isFetching ||
-        (filteredPokemon.length === 0 && (
-          <ul
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-            role="list"
-          >
-            {[...Array(4)].map((i) => (
-              <li key={i} className="col-span-1 flex flex-col" role="listitem">
-                <div className="bg-slate-200 w-full h-[360px] mt-3 rounded-lg animate-pulse"></div>
-              </li>
-            ))}
-          </ul>
-        ))}
+      {searchTerm !== '' && filteredPokemon.length === 0 && (
+        <p className="text-center font-medium mt-6">
+          No Pokemon found with the search term `{searchTerm}`
+        </p>
+      )}
+
+      {(isFetching || (filteredPokemon.length === 0 && searchTerm === '')) && (
+        <SkeletonList />
+      )}
 
       <PokemonList data={filteredPokemon} />
 

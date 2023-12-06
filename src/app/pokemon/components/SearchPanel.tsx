@@ -1,4 +1,5 @@
-import { SearchByEnum } from '../page';
+import { SearchByEnum } from 'types/search';
+
 import Dropdown from './Dropdown';
 
 export type SearchProps = {
