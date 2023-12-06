@@ -16,12 +16,9 @@ type getPokemonProps = {
   meta: Record<string, unknown> | undefined;
 };
 
-export const getPokemon = async ({ pageParam, queryKey }: getPokemonProps) => {
-  const searchBy = queryKey[1];
-  const searchTerm = queryKey[2];
+export const getPokemon = async ({ pageParam }: getPokemonProps) => {
   const url = typeof pageParam === 'string' ? pageParam : API_URL;
 
-  console.log({ pageParam, searchBy, searchTerm });
   // fetch the list of pokemon
   const pokemonList = await axios
     .get(url)
